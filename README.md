@@ -42,11 +42,13 @@
 
 ## 📷 Screenshots
 
-(Add your project screenshots here)
+![Dashboard](./images/dashboard_img.png)
 
-Example:
-![Dashboard](./screenshot.png)
+### 🚨 Alerts View
+![Alerts](./images/alert_dashboard.png)
 
+### 🔐 Login Page
+![Login](./images/login_pg.png)
 ---
 
 ## ▶️ How to Run the Project
@@ -54,8 +56,8 @@ Example:
 ### 🔹 Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/Benitta-J-S/SmartCareLink_Benitta_JS_2026-_project.git
+cd  carelink
 ```
 
 ### 🔹 Run Backend
