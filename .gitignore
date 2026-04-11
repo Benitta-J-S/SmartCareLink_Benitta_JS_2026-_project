@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment files
+.env
+.env.local
+
+# Build files
+dist/
+build/
+*.exe
+*.dll
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Mobile
+mobile/CareLinkApp/android/.gradle/
+mobile/CareLinkApp/ios/Pods/
+
+# Dashboard
+dashboard/admin-dashboard/build/
