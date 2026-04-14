@@ -2,43 +2,50 @@
 
 ## 📌 Project Overview
 
-**CareLink** is a real-time patient monitoring system designed to detect critical health conditions and provide instant alerts. It helps healthcare professionals respond quickly to emergencies through a live dashboard.
 
----
+## 📱 Overview
+CareLink is a **real-time patient safety monitoring system** that connects patients, families, and administrators through a mobile app and web dashboard.
 
-## 🚀 Key Features
-
-* 🔴 Real-time emergency alert system
-* 📊 Live patient monitoring dashboard
-* 🔔 Alert acknowledgment functionality
-* ⚡ Fast and scalable backend using Express.js
-* 🌐 REST API integration
-* 🔌 Real-time updates using Socket.IO
-
----
+## ✨ Features
+- 🚨 **One-touch Panic Button** - Instant emergency alerts
+- 📍 **Real-time GPS Tracking** - Live patient location
+- 👁️ **Password Visibility Toggle** - Show/hide password
+- 🔐 **JWT Authentication** - Secure login system
+- 📊 **Admin Dashboard** - Monitor all patients
+- 📱 **Cross-platform Mobile App** - Works on iOS & Android
 
 ## 🛠 Tech Stack
+| Layer | Technology |
+|-------|------------|
+| Backend | Node.js, Express, Socket.IO |
+| Database | MongoDB |
+| Frontend | React, Material-UI |
+| Mobile | React Native, Expo |
 
-### 💻 Frontend
+## 🚀 Quick Start
 
-* React.js
-* Material UI (MUI)
-* Axios
+### Prerequisites
+- Node.js installed
+- MongoDB installed or MongoDB Atlas account
+- Expo Go app on phone
 
-### ⚙️ Backend
+### Run Locally
 
-* Node.js
-* Express.js
+```bash
+# 1. Start Backend
+cd backend
+npm install
+node server.js
 
-### 🗄 Database (Optional)
+# 2. Start Dashboard (new terminal)
+cd dashboard/admin-dashboard
+npm install
+npm start
 
-* MongoDB
-
-### 🔄 Real-time Communication
-
-* Socket.IO
-
----
+# 3. Start Mobile App (new terminal)
+cd mobile/CareLinkApp
+npm install
+npx expo start -c
 
 ## 📷 Screenshots
 
@@ -121,6 +128,8 @@ POST /api/acknowledge/:id
 ## 👩‍💻 Author
 
 **Benitta J S**
+GitHub:https://github.com/Benitta-J-S
+LinkedIn:https://www.linkedin.com/in/benitta-j-s-14126025a/
 
 ---
 
