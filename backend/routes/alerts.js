@@ -4,8 +4,7 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-
-// Create alert (panic button)
+// Create alert
 router.post('/create', auth, async (req, res) => {
     try {
         const { type, location, notes } = req.body;
@@ -20,15 +19,18 @@ router.post('/create', auth, async (req, res) => {
         
         await alert.save();
         
-        // Get patient info for response
         const patient = await User.findById(req.userId);
         
-        // ✅ Emit real-time alert via Socket.IO
+        // Emit socket event if available
         const io = req.app.get('io');
         if (io) {
             io.emit('new_alert', {
                 alert,
-                patient
+                patient: {
+                    id: patient._id,
+                    name: patient.name,
+                    phone: patient.phone
+                }
             });
         }
         
@@ -36,26 +38,19 @@ router.post('/create', auth, async (req, res) => {
             message: 'Alert created successfully',
             alert
         });
-        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-
-// Get active alerts (for family members)
+// Get active alerts
 router.get('/active', auth, async (req, res) => {
     try {
         let query = {};
         
         if (req.userRole === 'patient') {
             query.patientId = req.userId;
-        } else if (req.userRole === 'family') {
-            // Family sees alerts for their linked patients
-            const familyMember = await User.findById(req.userId);
-            query.patientId = { $in: familyMember.linkedPatients || [] };
         }
-        
         query.status = 'active';
         
         const alerts = await Alert.find(query)
@@ -63,12 +58,10 @@ router.get('/active', auth, async (req, res) => {
             .sort('-createdAt');
         
         res.json(alerts);
-        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
-
 
 // Acknowledge alert
 router.put('/:alertId/acknowledge', auth, async (req, res) => {
@@ -86,12 +79,10 @@ router.put('/:alertId/acknowledge', auth, async (req, res) => {
         await alert.save();
         
         res.json({ message: 'Alert acknowledged', alert });
-        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
-
 
 // Resolve alert
 router.put('/:alertId/resolve', auth, async (req, res) => {
@@ -108,11 +99,9 @@ router.put('/:alertId/resolve', auth, async (req, res) => {
         await alert.save();
         
         res.json({ message: 'Alert resolved', alert });
-        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
-
 
 module.exports = router;

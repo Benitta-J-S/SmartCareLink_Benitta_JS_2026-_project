@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true
     },
     password: {
         type: String,
@@ -20,13 +21,20 @@ const userSchema = new mongoose.Schema({
         enum: ['patient', 'family', 'admin'],
         default: 'patient'
     },
-    phone: String,
+    phone: {
+        type: String,
+        default: ''
+    },
     emergencyContacts: [{
         name: String,
         phone: String,
         relationship: String
     }],
     medicalConditions: [String],
+    isActive: {
+        type: Boolean,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

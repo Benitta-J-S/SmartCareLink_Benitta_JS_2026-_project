@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Alert, 
+  ActivityIndicator, 
+  TextInput 
+} from 'react-native';
 
 // ⚠️ IMPORTANT: Change this to YOUR computer's IP address
+// Find your IP using 'ipconfig' command in terminal
 const API_URL = 'http://192.168.137.1:5001/api';  // ← CHANGE THIS IP!
 
 export default function App() {
@@ -10,6 +19,7 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Login function
   const handleLogin = async () => {
@@ -33,7 +43,11 @@ export default function App() {
         Alert.alert('Success', 'Login successful!');
         setScreen('dashboard');
       } else {
-        Alert.alert('Error', data.error || 'Login failed');
+        if (response.status === 401) {
+          Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
+        } else {
+          Alert.alert('Error', data.error || 'Login failed');
+        }
       }
     } catch (error) {
       Alert.alert('Error', 'Cannot connect to server. Make sure backend is running.');
@@ -46,6 +60,11 @@ export default function App() {
   const handleRegister = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter email and password');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
       return;
     }
 
@@ -83,7 +102,6 @@ export default function App() {
   const sendPanicAlert = async () => {
     setLoading(true);
     try {
-      // First, try to get token (in real app, you'd save it after login)
       const loginResponse = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,7 +116,6 @@ export default function App() {
         return;
       }
 
-      // Send panic alert
       const alertResponse = await fetch(`${API_URL}/alerts/create`, {
         method: 'POST',
         headers: {
@@ -123,6 +140,17 @@ export default function App() {
     }
   };
 
+  const handleForgotPassword = () => {
+    Alert.alert(
+      'Forgot Password?',
+      'Contact your administrator to reset your password.\n\nOr register as a new user.',
+      [
+        { text: 'OK', style: 'cancel' },
+        { text: 'Register', onPress: () => setScreen('register') }
+      ]
+    );
+  };
+
   // LOGIN SCREEN
   if (screen === 'login') {
     return (
@@ -133,19 +161,36 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
         />
         
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor="#999"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity 
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Text style={styles.eyeIconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.forgotPasswordLink}
+          onPress={handleForgotPassword}
+        >
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
         
         <TouchableOpacity 
           style={styles.button} 
@@ -175,19 +220,29 @@ export default function App() {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
         />
         
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password (min 6 characters)"
+            placeholderTextColor="#999"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity 
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Text style={styles.eyeIconText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+          </TouchableOpacity>
+        </View>
         
         <TouchableOpacity 
           style={styles.button} 
@@ -250,9 +305,6 @@ export default function App() {
   }
 }
 
-// Need to add TextInput to imports at top
-import { TextInput } from 'react-native';
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -280,7 +332,38 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: '#ddd'
+    borderColor: '#ddd',
+    fontSize: 16
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    width: '100%',
+    marginBottom: 10
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 15,
+    fontSize: 16
+  },
+  eyeIcon: {
+    padding: 15
+  },
+  eyeIconText: {
+    fontSize: 20,
+    color: '#666'
+  },
+  forgotPasswordLink: {
+    alignSelf: 'flex-end',
+    marginBottom: 20
+  },
+  forgotPasswordText: {
+    color: '#007aff',
+    fontSize: 14
   },
   button: {
     backgroundColor: '#007aff',
